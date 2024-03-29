@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { MAX_NOTE_BODY_LENGTH, MIN_NOTE_BODY_LENGTH, NOTE_SUCCESS_MESSAGE_TIME } from '../../constants';
+import { mockLongNoteOne, mockLongNoteTwo, mockShortNoteOne, mockShortNoteTwo } from '../../mocks/notes';
 import DeleteNoteModal from '../DeleteNoteModal';
 import NoteModal from '../NoteModal';
 import NotesList, { NoteProps, NotesListProps } from '../NotesList';
@@ -11,8 +12,23 @@ import { MainPageProps } from './types';
 const MainPage: FC<MainPageProps> = ({
   //
 }) => {
+  const mockNotes = [
+    mockShortNoteOne,
+    mockShortNoteTwo,
+    mockLongNoteOne,
+    mockLongNoteTwo,
+  ];
+
   // notes stuff
-  const [notes, setNotes] = useState<{[noteId: string]: NoteProps}>({});
+  const noralizedNotes = mockNotes
+    .reduce((acc, note) => ({
+      ...acc,
+      [note.id]: {
+        ...note,
+        expanded: false,
+      }
+    }), {})
+  const [notes, setNotes] = useState<{[noteId: string]: NoteProps}>(noralizedNotes);
 
   const handleExpandNote = (noteId: string) => {
     const note = notes[noteId];
