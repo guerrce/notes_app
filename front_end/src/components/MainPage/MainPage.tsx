@@ -53,16 +53,19 @@ const MainPage: FC<MainPageProps> = ({
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<boolean>(false);
+  const [timeout, setTimeoutVal] = useState<NodeJS.Timeout | undefined>();
   const [charCountError, setCharCountError] = useState<boolean>(false);
   const isEdit = !!noteId;
 
   const handleOpenNewNote = () => {
+    setSubmitSuccess(false);
     setModalOpen(true);
     setNoteId(undefined);
   };
 
   const handleOpenEditNote = (noteId: string) => {
     const {title, body} = notes[noteId];
+    setSubmitSuccess(false);
     setNoteId(noteId);
     setModalNoteTitle(title);
     setModalNoteBody(body);
@@ -74,6 +77,7 @@ const MainPage: FC<MainPageProps> = ({
   const handleChangeBody = (input: string) => {
     setModalNoteBody(input);
   };
+
   const handleSubmit = () => {
     const bodyCharCount = modalNoteBody.length;
     if (MIN_NOTE_BODY_LENGTH < bodyCharCount && bodyCharCount < MAX_NOTE_BODY_LENGTH){
@@ -82,20 +86,20 @@ const MainPage: FC<MainPageProps> = ({
       setModalNoteTitle('');
       setModalNoteBody('');
       setCharCountError(false);
-      setTimeout(() => {
+      const newTimeout = setTimeout(() => {
         setModalOpen(false);
-        setSubmitSuccess(false)
       }, NOTE_SUCCESS_MESSAGE_TIME);
+      setTimeoutVal(newTimeout)
     } else {
       setCharCountError(true);
     }
   };
   const handleCloseModoal = () => {
     setModalOpen(false);
+    clearTimeout(timeout);
     setModalNoteTitle('');
     setModalNoteBody('');
     setCharCountError(false);
-    setSubmitSuccess(false);
   };
 
   // Delete modal stuff
@@ -158,6 +162,7 @@ const MainPage: FC<MainPageProps> = ({
       error={submitError}
       submitSuccess={submitSuccess}
       loading={submitLoading}
+      noteBodyError={charCountError}
       onChangeTitle={handleChangeTitle}
       onChangeBody={handleChangeBody}
       onClose={handleCloseModoal}

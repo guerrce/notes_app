@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import { Button, Typography } from "@mui/material";
-import { CANCEL_BUTTON_TEXT, DELETE_BUTTON_TEXT, DELETE_NOTE_ERROR_MESSAGE, DELETE_NOTE_SUCCESS_MESSAGE } from "./constants";
+import { Typography } from "@mui/material";
+import { DELETE_BUTTON_TEXT, DELETE_NOTE_DIALOG_TITLE, DELETE_NOTE_ERROR_MESSAGE, DELETE_NOTE_SUCCESS_MESSAGE } from "./constants";
 import { DeleteNoteModalProps } from "./types";
 import ActionModal from "../ActionModal";
 
@@ -17,6 +17,7 @@ const DeleteNoteModal: FC<DeleteNoteModalProps> = ({
 
   return (
     <ActionModal
+      dialogTitle={DELETE_NOTE_DIALOG_TITLE}
       open={open}
       error={error}
       errorMessage={DELETE_NOTE_ERROR_MESSAGE}
@@ -24,19 +25,13 @@ const DeleteNoteModal: FC<DeleteNoteModalProps> = ({
       actionSuccessMessage={DELETE_NOTE_SUCCESS_MESSAGE}
       loading={loading}
       onClose={onClose}
+      onActionSubmit={onDelete}
+      actionSubmitButtonText={DELETE_BUTTON_TEXT}
     >
       <div>
         <Typography>
           {deleteNoteMessage}
         </Typography>
-        <span>
-          <Button onClick={onDelete}>
-            {DELETE_BUTTON_TEXT}
-          </Button>
-          <Button onClick={onClose}>
-            {CANCEL_BUTTON_TEXT}
-          </Button>
-        </span>
       </div>
     </ActionModal>
   );

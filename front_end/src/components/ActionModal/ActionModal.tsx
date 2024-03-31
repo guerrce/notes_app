@@ -1,16 +1,20 @@
-import { Button, CircularProgress, Modal, Typography } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import React, { FC } from "react";
-import { DEFAULT_ERROR_MESSAGE, DEFAULT_SUCCESS_MESSAGE } from "./constants";
+import { DEFAULT_CANCEL_BUTTON_TEXT, DEFAULT_ERROR_MESSAGE, DEFAULT_SUBMIT_BUTTON_TEXT, DEFAULT_SUCCESS_MESSAGE } from "./constants";
 import { ErrorMessageContainer } from "./styled";
 import { ActionModalProps } from "./types";
 
 const ActionModal: FC<ActionModalProps> = ({
+  dialogTitle,
   open,
   error,
   errorMessage=DEFAULT_ERROR_MESSAGE,
   actionSuccess,
   actionSuccessMessage=DEFAULT_SUCCESS_MESSAGE,
   loading,
+  actionSubmitButtonText=DEFAULT_SUBMIT_BUTTON_TEXT,
+  cancelButtonText=DEFAULT_CANCEL_BUTTON_TEXT,
+  onActionSubmit,
   onClose,
   children,
 }) => {
@@ -40,12 +44,23 @@ const ActionModal: FC<ActionModalProps> = ({
   };
 
   return (
-    <Modal
+    <Dialog
       open={open}
       onClose={onClose}
     >
-      {getModalContent()}
-    </Modal>
+      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogContent>
+        {getModalContent()}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onActionSubmit}>
+          {actionSubmitButtonText}
+        </Button>
+        <Button onClick={onClose}>
+          {cancelButtonText}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
