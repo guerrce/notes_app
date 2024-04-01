@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request } from 'express';
 import prisma from '../client';
 import { validateNote } from '../helpers/validateNote';
 
@@ -10,20 +10,21 @@ const selectNoteWithoutDelete = {
   body: true,
 };
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   const { search }: { search?: string } = req.query;
+  const searchQuery = search || "";
   const filteredPosts = await prisma.note.findMany({
     where: {
       deleted: false,
       OR: [
         {
           title: {
-            contains: search,
+            contains: searchQuery,
           },
         },
         {
           body: {
-            contains: search,
+            contains: searchQuery,
           },
         },
       ],
@@ -37,50 +38,59 @@ router.post('/', async (req, res) => {
   const { title, body } = req.body;
 
   if (!validateNote(body)){
-    res.status(400).send('Invalid note body.');
+    res.status(400).json({message: 'Invalid note body.'});
+  } else{
+    const newNote = await prisma.note.create({
+      data: { title, body },
+      select: selectNoteWithoutDelete,
+    });
+    res.json(newNote);
   }
-
-  const newNote = await prisma.note.create({
-    data: { title, body },
-    select: selectNoteWithoutDelete,
-  });
-  res.json(newNote);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res, next) => {
   const { id } = req.params;
   const { title, body } = req.body;
   const idNum = parseInt(id);
   if (typeof idNum !== 'number'){
-    res.status(400).send('id is not a number ')
+    res.status(400).json({message: 'id is not a number.'})
+  } else if (!validateNote(body)){
+    res.status(400).json({message: 'Invalid note body.'});
+  } else {
+    try {
+      const editedNote = await prisma.note.update({
+        where: {id: idNum},
+        data: { title, body },
+        select: selectNoteWithoutDelete,
+      });
+    
+      res.json(editedNote);
+    } catch(error) {
+      next(error)
+    }
   }
-  if (!validateNote(body)){
-    res.status(400).send('Invalid note body.');
-  }
-
-  const editedNote = await prisma.note.update({
-    where: {id: idNum},
-    data: { title, body },
-    select: selectNoteWithoutDelete,
-  });
-
-  res.json(editedNote);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
   const { id } = req.params
   const idNum = parseInt(id);
-  if (typeof idNum !== 'number'){
-    res.status(400).send('id is not a number ')
+  if (!id){
+    res.status(400).send("No id.")
   }
+  else if (typeof idNum !== 'number'){
+    res.status(400).send('id is not a number.')
+  } else {
+    try {
+      await prisma.note.update({
+        where: {id: idNum},
+        data: {deleted: true},
+      });
 
-  await prisma.note.update({
-    where: {id: idNum},
-    data: {deleted: true},
-  });
-
-  res.send(`Deleted note with id: ${id}`)
-
+      res.send(`Deleted note with id: ${id}`)
+    } catch(error){
+      next(error)
+    }
+  }
 });
 
 export default router;
