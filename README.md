@@ -2,4 +2,7 @@
 
 tools/frameworks/libraries used:
 front end:
-React, Material UI, styled components
+React, Material UI, styled components, axios
+
+backend:
+express, prisma

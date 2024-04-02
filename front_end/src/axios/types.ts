@@ -5,3 +5,9 @@ export type NoteEntity = {
 };
 
 export type GetNotesResponse = NoteEntity[];
+
+export type MakeNewNoteResponse = NoteEntity;
+
+export type EditNoteResponse = NoteEntity;
+
+export type DeleteNoteResponse = {id: number};

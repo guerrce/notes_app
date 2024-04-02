@@ -81,12 +81,13 @@ router.delete('/:id', async (req, res, next) => {
     res.status(400).send('id is not a number.')
   } else {
     try {
-      await prisma.note.update({
+      const {id} = await prisma.note.update({
         where: {id: idNum},
         data: {deleted: true},
+        select: {id: true}
       });
 
-      res.send(`Deleted note with id: ${id}`)
+      res.json({id});
     } catch(error){
       next(error)
     }
