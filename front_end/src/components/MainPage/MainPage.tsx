@@ -20,6 +20,7 @@ const MainPage: FC<MainPageProps> = ({
     handleSearchChange,
     handleClickSearch,
     handleExpandNote,
+    reloadNotes,
   } = useNotes();
 
   const {
@@ -37,7 +38,7 @@ const MainPage: FC<MainPageProps> = ({
     handleOpenEditNote,
     handleCloseEditModal,
     handleSubmit,
-  } = useEditNoteModal();
+  } = useEditNoteModal(reloadNotes);
 
   const {
     deleteModalOpen,
@@ -48,7 +49,7 @@ const MainPage: FC<MainPageProps> = ({
     handleOpenDeleteModal,
     handleCloseDeleteModal,
     handleDelete,
-  } = useDeleteNoteModal();
+  } = useDeleteNoteModal(reloadNotes);
 
   const flattenedNotes: NotesListProps['notes'] = Object
     .keys(notes)

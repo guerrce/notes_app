@@ -2,7 +2,9 @@ import { useState } from "react";
 import { deleteNote } from "../axios/notes";
 import { useGenericModal } from "./useGenericModal";
 
-export const useDeleteNoteModal = (): {
+export const useDeleteNoteModal = (
+  reloadNotes?: () => void
+): {
   deleteModalOpen: boolean,
   deleteModalLoading: boolean,
   deleteModalSuccess: boolean,
@@ -17,7 +19,8 @@ export const useDeleteNoteModal = (): {
   const onSubmit = async (): Promise<string> => {
     try {
       if (deleteNoteId){
-        const deleteNoteRes = await deleteNote({noteId: deleteNoteId})
+        await deleteNote({noteId: deleteNoteId})
+        reloadNotes && reloadNotes();
         return 'success';
       } else {
         throw new Error('No note id selected');
@@ -40,11 +43,11 @@ export const useDeleteNoteModal = (): {
 
   const handleOpenDeleteModal = (noteId: number) => {
     setDeleteNoteId(noteId);
-    openModal;
+    openModal();
   };
 
   const handleCloseDeleteModal = () => {
-    closeModal;
+    closeModal();
     setDeleteNoteId(undefined);
   };
   

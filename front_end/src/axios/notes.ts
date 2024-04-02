@@ -30,10 +30,8 @@ export  const makeNewNote = async ({
 }): Promise<MakeNewNoteResponse> => {
   try {
     const response = await axios.post('/notes', {
-      payload: {
-        title,
-        body,
-      }
+      title,
+      body,
     });
     if (response.status !== 200){
       throw new Error('error making new note');
@@ -55,10 +53,8 @@ export const editNote = async ({
 }): Promise<EditNoteResponse> => {
   try {
     const response = await axios.put(`/notes/${noteId}`, {
-      payload: {
-        title,
-        body,
-      }
+      title,
+      body,
     });
     if (response.status !== 200){
       throw new Error(`error editing note: ${noteId}`);

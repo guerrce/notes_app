@@ -2,9 +2,11 @@ import { useState } from "react";
 import { NOTE_SUCCESS_MESSAGE_TIME } from "../constants";
 
 export const useGenericModal = ({
-  onSubmit
+  onSubmit,
+  reload,
 }: {
   onSubmit: () => Promise<string | undefined>;
+  reload?: () => void;
 }): {
   open: boolean,
   loading: boolean,
@@ -21,29 +23,35 @@ export const useGenericModal = ({
   const [timeout, setTimeoutVal] = useState<NodeJS.Timeout | undefined>();
 
   const openModal = () => {
+    setModalLoading(false);
     setModalSuccess(false);
+    setModalError(false);
     setModalOpen(true);
   };
+
+  const closeModalWrapper = () => {
+    setModalOpen(false);
+    reload && reload();
+  }
 
   const submit = async () => {
     setModalLoading(true);
     const submitStatus = await onSubmit();
     if (submitStatus === 'success'){
-      setModalLoading(false);
       setModalSuccess(true);
       const newTimeout = setTimeout(() => {
-        setModalOpen(false);
+        closeModalWrapper();
       }, NOTE_SUCCESS_MESSAGE_TIME);
       setTimeoutVal(newTimeout)
     }
     if (submitStatus === 'error'){
-      setModalLoading(false);
       setModalError(true);
     }
+    setModalLoading(false);
   };
 
   const closeModal = () => {
-    setModalOpen(false);
+    closeModalWrapper();
     clearTimeout(timeout);
   };
 

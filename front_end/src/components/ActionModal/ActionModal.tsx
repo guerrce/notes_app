@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import React, { FC } from "react";
-import { DEFAULT_CANCEL_BUTTON_TEXT, DEFAULT_ERROR_MESSAGE, DEFAULT_SUBMIT_BUTTON_TEXT, DEFAULT_SUCCESS_MESSAGE } from "./constants";
+import { CLOSE_BUTTON_TEXT, DEFAULT_CANCEL_BUTTON_TEXT, DEFAULT_ERROR_MESSAGE, DEFAULT_SUBMIT_BUTTON_TEXT, DEFAULT_SUCCESS_MESSAGE } from "./constants";
 import { ErrorMessageContainer } from "./styled";
 import { ActionModalProps } from "./types";
 
@@ -43,6 +43,8 @@ const ActionModal: FC<ActionModalProps> = ({
     }
   };
 
+  const normalState = !(error || loading || actionSuccess);
+
   return (
     <Dialog
       open={open}
@@ -53,11 +55,13 @@ const ActionModal: FC<ActionModalProps> = ({
         {getModalContent()}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onActionSubmit}>
-          {actionSubmitButtonText}
-        </Button>
+        {normalState && (
+          <Button onClick={onActionSubmit}>
+            {actionSubmitButtonText}
+          </Button>
+        )}
         <Button onClick={onClose}>
-          {cancelButtonText}
+          {normalState ? cancelButtonText : CLOSE_BUTTON_TEXT}
         </Button>
       </DialogActions>
     </Dialog>

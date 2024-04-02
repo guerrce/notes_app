@@ -23,6 +23,7 @@ export const useNotes = (): {
   handleSearchChange: (newSearchValue: string) => void,
   handleClickSearch: () => void,
   handleExpandNote: (noteId: number) => void,
+  reloadNotes: () => void;
 } => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,5 +72,6 @@ export const useNotes = (): {
     handleSearchChange,
     handleClickSearch: handleSearch,
     handleExpandNote,
+    reloadNotes: handleSearch,
   };
 };

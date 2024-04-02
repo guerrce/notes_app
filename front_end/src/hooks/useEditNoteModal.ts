@@ -3,7 +3,9 @@ import { editNote, makeNewNote } from "../axios/notes";
 import { MAX_NOTE_BODY_LENGTH, MIN_NOTE_BODY_LENGTH } from "../constants";
 import { useGenericModal } from "./useGenericModal";
 
-export const useEditNoteModal = (): {
+export const useEditNoteModal = (
+  reloadNotes?: () => void
+): {
   editModalTitle: string,
   editModalBody: string,
   editModalOpen: boolean,
@@ -29,17 +31,18 @@ export const useEditNoteModal = (): {
     if (MIN_NOTE_BODY_LENGTH < bodyCharCount && bodyCharCount < MAX_NOTE_BODY_LENGTH){
       try {
         if (!noteId) {
-          const thing = await makeNewNote({
+          await makeNewNote({
             title: modalNoteTitle,
             body: modalNoteBody,
           });
         } else {
-          const other = await editNote({
+          await editNote({
             noteId,
             title: modalNoteTitle,
             body: modalNoteBody,
           });
         }
+        
         setModalNoteTitle('');
         setModalNoteBody('');
         setCharCountError(false);
@@ -62,7 +65,10 @@ export const useEditNoteModal = (): {
     openModal,
     closeModal,
     submit,
-  } = useGenericModal({onSubmit});
+  } = useGenericModal({
+    onSubmit,
+    reload: reloadNotes,
+  });
 
   const handleOpenNewNote = () => {
     setNoteId(undefined);
