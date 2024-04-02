@@ -1,5 +1,5 @@
 export type NoteProps = {
-  id: string,
+  id: number,
   title: string,
   body: string,
   expanded: boolean;
@@ -7,7 +7,8 @@ export type NoteProps = {
 
 export interface NotesListProps {
   notes: NoteProps[];
-  onExpandNote: (noteId: string) => void;
-  onEditNote: (noteId: string) => void;
-  onDeleteNote: (noteId: string) => void;
+  loading?: boolean;
+  onExpandNote: (noteId: number) => void;
+  onEditNote: (noteId: number, title: string, body: string) => void;
+  onDeleteNote: (noteId: number) => void;
 }

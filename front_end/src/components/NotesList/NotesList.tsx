@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { List, ListItem } from '@mui/material';
+import { CircularProgress, List, ListItem } from '@mui/material';
 import { NoteProps, NotesListProps } from './types';
 import Note from '../Note/Note';
 
 const NotesList: FC<NotesListProps> = ({
   notes,
+  loading,
   onExpandNote,
   onEditNote,
   onDeleteNote,
@@ -18,12 +19,18 @@ const NotesList: FC<NotesListProps> = ({
           body={body}
           expanded={expanded}
           onExpand={() => {onExpandNote(noteId)}}
-          onEdit={() => {onEditNote(noteId)}}
+          onEdit={() => {onEditNote(noteId, title, body)}}
           onDelete={() => {onDeleteNote(noteId)}}
         />
       </ListItem>
     )
   };
+
+  if (loading) {
+    return (
+      <CircularProgress />
+    )
+  }
   
   return(
     <List>
