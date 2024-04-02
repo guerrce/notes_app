@@ -1,4 +1,4 @@
-import express, { NextFunction, Request } from 'express';
+import express from 'express';
 import prisma from '../client';
 import { validateNote } from '../helpers/validateNote';
 
@@ -10,7 +10,7 @@ const selectNoteWithoutDelete = {
   body: true,
 };
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const { search }: { search?: string } = req.query;
   const searchQuery = search || "";
   const filteredPosts = await prisma.note.findMany({
