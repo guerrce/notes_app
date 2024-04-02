@@ -1,3 +1,4 @@
+import { NOTES_ENDPOINT } from "../constants";
 import axios from "./axios";
 import { DeleteNoteResponse, EditNoteResponse, GetNotesResponse, MakeNewNoteResponse } from "./types";
 
@@ -7,7 +8,7 @@ export const searchNotes = async ({
   searchQuery: string,
 }): Promise<GetNotesResponse> => {
   try {
-    const response = await axios.get('/notes', {
+    const response = await axios.get(`/${NOTES_ENDPOINT}`, {
       params: {
         search: searchQuery
       }
@@ -29,7 +30,7 @@ export  const makeNewNote = async ({
   body: string,
 }): Promise<MakeNewNoteResponse> => {
   try {
-    const response = await axios.post('/notes', {
+    const response = await axios.post(`/${NOTES_ENDPOINT}`, {
       title,
       body,
     });
@@ -52,7 +53,7 @@ export const editNote = async ({
   body: string,
 }): Promise<EditNoteResponse> => {
   try {
-    const response = await axios.put(`/notes/${noteId}`, {
+    const response = await axios.put(`/${NOTES_ENDPOINT}/${noteId}`, {
       title,
       body,
     });
@@ -71,7 +72,7 @@ export const deleteNote = async ({
   noteId: number,
 }): Promise<DeleteNoteResponse> => {
   try {
-    const response = await axios.delete(`/notes/${noteId}`);
+    const response = await axios.delete(`/${NOTES_ENDPOINT}/${noteId}`);
     if (response.status !== 200){
       throw new Error(`error deleting note: ${noteId}`);
     }
